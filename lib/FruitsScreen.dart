@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class FruitsScreen extends StatefulWidget {
-  const FruitsScreen({super.key});
+  const FruitsScreen({super.key, this.title = 'Fruits'});
+
+  final String title;
 
   @override
   State<FruitsScreen> createState() => _FruitsScreenState();
@@ -46,13 +48,42 @@ class _FruitsScreenState extends State<FruitsScreen> {
   // (and push the FAB up instead of covering it).
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
 
+  // Sorting state: null = original order (not sorted yet),
+  // true = A→Z (ASC), false = Z→A (DESC).
+  bool? _isAscending;
+
+  // ---------- Sorting ----------
+
+  /// Toggles ASC/DESC and sorts the list by name.
+  void _toggleSort() {
+    setState(() {
+      _isAscending = !(_isAscending ?? false); // first tap → ASC
+      _applySort();
+    });
+    _showMessage(_isAscending! ? 'Sorted A → Z' : 'Sorted Z → A');
+  }
+
+  /// Sorts [fruits] in place using the current order (case-insensitive).
+  /// Call inside setState. Does nothing if sorting was never enabled.
+  void _applySort() {
+    final ascending = _isAscending;
+    if (ascending == null) return;
+    fruits.sort((a, b) {
+      final result = a.toLowerCase().compareTo(b.toLowerCase());
+      return ascending ? result : -result;
+    });
+  }
+
   // ---------- CRUD ----------
 
   /// Create
   Future<void> _addFruit() async {
     final name = await _showFruitDialog();
     if (name == null) return;
-    setState(() => fruits.add(name));
+    setState(() {
+      fruits.add(name);
+      _applySort(); // keep list in current sort order
+    });
     _showMessage('"$name" added');
   }
 
@@ -64,7 +95,10 @@ class _FruitsScreenState extends State<FruitsScreen> {
       editIndex: index,
     );
     if (name == null || name == oldName) return;
-    setState(() => fruits[index] = name);
+    setState(() {
+      fruits[index] = name;
+      _applySort();
+    });
     _showMessage('"$oldName" renamed to "$name"');
   }
 
@@ -81,9 +115,10 @@ class _FruitsScreenState extends State<FruitsScreen> {
         action: SnackBarAction(
           label: 'UNDO',
           onPressed: () {
-            setState(
-              () => fruits.insert(index.clamp(0, fruits.length), removed),
-            );
+            setState(() {
+              fruits.insert(index.clamp(0, fruits.length), removed);
+              _applySort();
+            });
           },
         ),
       ),
@@ -130,6 +165,25 @@ class _FruitsScreenState extends State<FruitsScreen> {
     return ScaffoldMessenger(
       key: _messengerKey,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
+          actions: [
+            IconButton(
+              tooltip: switch (_isAscending) {
+                true => 'Sorted A → Z (tap for Z → A)',
+                false => 'Sorted Z → A (tap for A → Z)',
+                null => 'Sort by name',
+              },
+              icon: Icon(
+                _isAscending == false
+                    ? Icons.arrow_upward
+                    : Icons.arrow_downward,
+              ),
+              onPressed: _toggleSort,
+            ),
+          ],
+        ),
         body: fruits.isEmpty
             ? const Center(child: Text('No fruits yet. Tap + to add one.'))
             : ListView.separated(
@@ -138,7 +192,7 @@ class _FruitsScreenState extends State<FruitsScreen> {
                 itemBuilder: (context, index) {
                   final fruit = fruits[index];
                   return ListTile(
-                    key: ValueKey(fruit),
+                    // key: ValueKey(fruit),
                     leading: CircleAvatar(child: Text(fruit[0].toUpperCase())),
                     title: Text(fruit),
                     onTap: () => _editFruit(index),
