@@ -74,6 +74,22 @@ class _FruitsScreenState extends State<FruitsScreen> {
     });
   }
 
+  // Names of the fruits that are currently checked (selected).
+  // Names are unique, so the name works as the item's id.
+  final Set<String> _selectedFruits = {};
+
+  // ---------- Selection ----------
+
+  void _toggleSelected(String fruit, bool? checked) {
+    setState(() {
+      if (checked ?? false) {
+        _selectedFruits.add(fruit);
+      } else {
+        _selectedFruits.remove(fruit);
+      }
+    });
+  }
+
   // ---------- CRUD ----------
 
   /// Create
@@ -97,6 +113,8 @@ class _FruitsScreenState extends State<FruitsScreen> {
     if (name == null || name == oldName) return;
     setState(() {
       fruits[index] = name;
+      // Keep the checked state when a fruit is renamed.
+      if (_selectedFruits.remove(oldName)) _selectedFruits.add(name);
       _applySort();
     });
     _showMessage('"$oldName" renamed to "$name"');
@@ -105,7 +123,11 @@ class _FruitsScreenState extends State<FruitsScreen> {
   /// Delete (with undo)
   void _deleteFruit(int index) {
     final removed = fruits[index];
-    setState(() => fruits.removeAt(index));
+    final wasSelected = _selectedFruits.contains(removed);
+    setState(() {
+      fruits.removeAt(index);
+      _selectedFruits.remove(removed);
+    });
 
     final messenger = _messengerKey.currentState!;
     messenger.hideCurrentSnackBar();
@@ -117,6 +139,7 @@ class _FruitsScreenState extends State<FruitsScreen> {
           onPressed: () {
             setState(() {
               fruits.insert(index.clamp(0, fruits.length), removed);
+              if (wasSelected) _selectedFruits.add(removed);
               _applySort();
             });
           },
@@ -191,7 +214,13 @@ class _FruitsScreenState extends State<FruitsScreen> {
                 separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final fruit = fruits[index];
+                  final isSelected = _selectedFruits.contains(fruit);
                   return ListTile(
+                    selected: isSelected,
+                    // Highlight colour for checked items.
+                    selectedTileColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
                     // key: ValueKey(fruit),
                     leading: CircleAvatar(child: Text(fruit[0].toUpperCase())),
                     title: Text(fruit),
@@ -199,6 +228,11 @@ class _FruitsScreenState extends State<FruitsScreen> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Checkbox(
+                          value: isSelected,
+                          onChanged: (checked) =>
+                              _toggleSelected(fruit, checked),
+                        ),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           tooltip: 'Edit',
