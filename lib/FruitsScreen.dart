@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_play_ground/Fruit.dart';
+import 'package:flutter_play_ground/FruitListItem.dart';
 
 class FruitsScreen extends StatefulWidget {
   const FruitsScreen({super.key, this.title = 'Fruits'});
@@ -207,36 +208,13 @@ class _FruitsScreenState extends State<FruitsScreen> {
                 separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final fruit = fruits[index];
-                  return ListTile(
-                    // key: ValueKey(fruit.id),
-                    selected: fruit.isSelected,
-                    // Highlight colour for checked items.
-                    selectedTileColor: Theme.of(context)
-                        .colorScheme
-                        .primaryContainer,
-                    leading: CircleAvatar(child: Text('${fruit.id}')),
-                    title: Text(fruit.name),
-                    onTap: () => _editFruit(fruit),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Checkbox(
-                          value: fruit.isSelected,
-                          onChanged: (checked) =>
-                              _toggleSelected(fruit, checked),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          tooltip: 'Edit',
-                          onPressed: () => _editFruit(fruit),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          tooltip: 'Delete',
-                          onPressed: () => _deleteFruit(fruit),
-                        ),
-                      ],
-                    ),
+                  return FruitListItem(
+                    key: ValueKey(fruit.id),
+                    fruit: fruit,
+                    onSelectedChanged: (checked) =>
+                        _toggleSelected(fruit, checked),
+                    onEdit: () => _editFruit(fruit),
+                    onDelete: () => _deleteFruit(fruit),
                   );
                 },
               ),
