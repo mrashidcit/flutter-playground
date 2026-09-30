@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_play_ground/Fruit.dart';
 
 class FruitsScreen extends StatefulWidget {
   const FruitsScreen({super.key, this.title = 'Fruits'});
@@ -10,8 +11,16 @@ class FruitsScreen extends StatefulWidget {
 }
 
 class _FruitsScreenState extends State<FruitsScreen> {
-  // In-memory data source.
-  final List<String> fruits = [
+  // Id to give the next fruit that is created (1, 2, 3, ...).
+  int _nextId = 1;
+
+  // In-memory data source. Ids are assigned in ascending order,
+  // every fruit starts unselected.
+  late final List<Fruit> fruits = _initialFruitNames
+      .map((name) => _createFruit(name))
+      .toList();
+
+  static const List<String> _initialFruitNames = [
     "Apple",
     "Banana",
     "Mango",
@@ -44,6 +53,9 @@ class _FruitsScreenState extends State<FruitsScreen> {
     "Grapefruit",
   ];
 
+  /// Creates a new [Fruit] with the next id.
+  Fruit _createFruit(String name) => Fruit(id: _nextId++, name: name);
+
   // Own messenger so SnackBars appear inside this screen's Scaffold
   // (and push the FAB up instead of covering it).
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -63,31 +75,21 @@ class _FruitsScreenState extends State<FruitsScreen> {
     _showMessage(_isAscending! ? 'Sorted A → Z' : 'Sorted Z → A');
   }
 
-  /// Sorts [fruits] in place using the current order (case-insensitive).
+  /// Sorts [fruits] in place by name (case-insensitive).
   /// Call inside setState. Does nothing if sorting was never enabled.
   void _applySort() {
     final ascending = _isAscending;
     if (ascending == null) return;
     fruits.sort((a, b) {
-      final result = a.toLowerCase().compareTo(b.toLowerCase());
+      final result = a.name.toLowerCase().compareTo(b.name.toLowerCase());
       return ascending ? result : -result;
     });
   }
 
-  // Names of the fruits that are currently checked (selected).
-  // Names are unique, so the name works as the item's id.
-  final Set<String> _selectedFruits = {};
-
   // ---------- Selection ----------
 
-  void _toggleSelected(String fruit, bool? checked) {
-    setState(() {
-      if (checked ?? false) {
-        _selectedFruits.add(fruit);
-      } else {
-        _selectedFruits.remove(fruit);
-      }
-    });
+  void _toggleSelected(Fruit fruit, bool? checked) {
+    setState(() => fruit.isSelected = checked ?? false);
   }
 
   // ---------- CRUD ----------
@@ -97,49 +99,41 @@ class _FruitsScreenState extends State<FruitsScreen> {
     final name = await _showFruitDialog();
     if (name == null) return;
     setState(() {
-      fruits.add(name);
+      fruits.add(_createFruit(name));
       _applySort(); // keep list in current sort order
     });
     _showMessage('"$name" added');
   }
 
   /// Update
-  Future<void> _editFruit(int index) async {
-    final oldName = fruits[index];
-    final name = await _showFruitDialog(
-      initialValue: oldName,
-      editIndex: index,
-    );
+  Future<void> _editFruit(Fruit fruit) async {
+    final oldName = fruit.name;
+    final name = await _showFruitDialog(editing: fruit);
     if (name == null || name == oldName) return;
     setState(() {
-      fruits[index] = name;
-      // Keep the checked state when a fruit is renamed.
-      if (_selectedFruits.remove(oldName)) _selectedFruits.add(name);
+      fruit.name = name; // id and isSelected stay the same
       _applySort();
     });
     _showMessage('"$oldName" renamed to "$name"');
   }
 
   /// Delete (with undo)
-  void _deleteFruit(int index) {
-    final removed = fruits[index];
-    final wasSelected = _selectedFruits.contains(removed);
-    setState(() {
-      fruits.removeAt(index);
-      _selectedFruits.remove(removed);
-    });
+  void _deleteFruit(Fruit fruit) {
+    final index = fruits.indexWhere((f) => f.id == fruit.id);
+    if (index == -1) return;
+    setState(() => fruits.removeAt(index));
 
     final messenger = _messengerKey.currentState!;
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
       SnackBar(
-        content: Text('"$removed" deleted'),
+        content: Text('"${fruit.name}" deleted'),
         action: SnackBarAction(
           label: 'UNDO',
           onPressed: () {
+            // Same object comes back: same id and same isSelected.
             setState(() {
-              fruits.insert(index.clamp(0, fruits.length), removed);
-              if (wasSelected) _selectedFruits.add(removed);
+              fruits.insert(index.clamp(0, fruits.length), fruit);
               _applySort();
             });
           },
@@ -151,26 +145,25 @@ class _FruitsScreenState extends State<FruitsScreen> {
   // ---------- Helpers ----------
 
   /// Returns an error message if [name] is invalid, otherwise null.
-  String? _validate(String name, {int? editIndex}) {
+  /// [editingId] is skipped so a fruit can keep its own name.
+  String? _validate(String name, {int? editingId}) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return 'Please enter a fruit name';
-    for (var i = 0; i < fruits.length; i++) {
-      if (i == editIndex) continue;
-      if (fruits[i].toLowerCase() == trimmed.toLowerCase()) {
-        return '"$trimmed" already exists';
-      }
-    }
-    return null;
+    final exists = fruits.any(
+      (f) => f.id != editingId && f.name.toLowerCase() == trimmed.toLowerCase(),
+    );
+    return exists ? '"$trimmed" already exists' : null;
   }
 
-  Future<String?> _showFruitDialog({String? initialValue, int? editIndex}) {
+  /// Shows the Add dialog, or the Edit dialog when [editing] is given.
+  Future<String?> _showFruitDialog({Fruit? editing}) {
     return showDialog<String>(
       context: context,
       builder: (_) => _FruitDialog(
-        title: initialValue == null ? 'Add Fruit' : 'Edit Fruit',
-        confirmLabel: initialValue == null ? 'Add' : 'Save',
-        initialValue: initialValue,
-        validator: (value) => _validate(value, editIndex: editIndex),
+        title: editing == null ? 'Add Fruit' : 'Edit Fruit',
+        confirmLabel: editing == null ? 'Add' : 'Save',
+        initialValue: editing?.name,
+        validator: (value) => _validate(value, editingId: editing?.id),
       ),
     );
   }
@@ -214,34 +207,33 @@ class _FruitsScreenState extends State<FruitsScreen> {
                 separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final fruit = fruits[index];
-                  final isSelected = _selectedFruits.contains(fruit);
                   return ListTile(
-                    selected: isSelected,
+                    // key: ValueKey(fruit.id),
+                    selected: fruit.isSelected,
                     // Highlight colour for checked items.
-                    selectedTileColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
-                    // key: ValueKey(fruit),
-                    leading: CircleAvatar(child: Text(fruit[0].toUpperCase())),
-                    title: Text(fruit),
-                    onTap: () => _editFruit(index),
+                    selectedTileColor: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer,
+                    leading: CircleAvatar(child: Text('${fruit.id}')),
+                    title: Text(fruit.name),
+                    onTap: () => _editFruit(fruit),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Checkbox(
-                          value: isSelected,
+                          value: fruit.isSelected,
                           onChanged: (checked) =>
                               _toggleSelected(fruit, checked),
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           tooltip: 'Edit',
-                          onPressed: () => _editFruit(index),
+                          onPressed: () => _editFruit(fruit),
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           tooltip: 'Delete',
-                          onPressed: () => _deleteFruit(index),
+                          onPressed: () => _deleteFruit(fruit),
                         ),
                       ],
                     ),
