@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_play_ground/FruitsScreen.dart';
+import 'package:flutter_play_ground/SignUpScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // Show the Sign Up screen when the app opens.
+      home: const SignUpScreen(),
     );
   }
 }
