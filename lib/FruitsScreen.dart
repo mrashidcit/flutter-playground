@@ -191,6 +191,14 @@ class _FruitsScreenState extends State<FruitsScreen> {
             : ListView.separated(
                 itemCount: fruits.length,
                 separatorBuilder: (_, __) => const Divider(height: 1),
+                // Tells the list where a keyed item moved to after sorting,
+                // so its State (e.g. the Qty value) moves with it instead
+                // of being thrown away.
+                findItemIndexCallback: (key) {
+                  final id = (key as ValueKey<int>).value;
+                  final index = fruits.indexWhere((f) => f.id == id);
+                  return index == -1 ? null : index;
+                },
                 itemBuilder: (context, index) {
                   final fruit = fruits[index];
                   return FruitListItem(
