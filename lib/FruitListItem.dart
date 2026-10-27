@@ -59,7 +59,7 @@ class _FruitListItemState extends State<FruitListItem>
             const Text('Qty'),
             const SizedBox(width: 8),
             SizedBox(
-              width: 80,
+              width: 60,
               child: TextField(
                 controller: _qtyController,
                 keyboardType: TextInputType.number,

@@ -24,34 +24,12 @@ class _FruitsScreenState extends State<FruitsScreen> {
   static const List<String> _initialFruitNames = [
     "Apple",
     "Banana",
-    "Mango",
-    "Orange",
-    "Grapes",
-    "Pineapple",
-    "Watermelon",
-    "Papaya",
-    "Strawberry",
     "Blueberry",
-    "Raspberry",
-    "Blackberry",
-    "Peach",
-    "Pear",
-    "Plum",
     "Cherry",
-    "Guava",
-    "Pomegranate",
-    "Kiwi",
     "Coconut",
-    "Avocado",
-    "Apricot",
     "Fig",
-    "Lychee",
-    "Dragon Fruit",
-    "Passion Fruit",
-    "Cantaloupe",
-    "Jackfruit",
-    "Tangerine",
-    "Grapefruit",
+    "Grapes",
+    "Kiwi",
   ];
 
   /// Creates a new [Fruit] with the next id.
@@ -63,7 +41,14 @@ class _FruitsScreenState extends State<FruitsScreen> {
 
   // Sorting state: null = original order (not sorted yet),
   // true = A→Z (ASC), false = Z→A (DESC).
-  bool? _isAscending;
+  // Starts as ASC so the list is A→Z when the screen first opens.
+  bool? _isAscending = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _applySort(); // initial A→Z order
+  }
 
   // ---------- Sorting ----------
 
