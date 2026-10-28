@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_play_ground/FruitsScreen.dart';
-import 'package:flutter_play_ground/SignUpScreen.dart';
+import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
+import 'package:flutter_play_ground/signUp/SignUpProvider.dart';
+import 'package:flutter_play_ground/signUp/SignUpScreen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => SignUpProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

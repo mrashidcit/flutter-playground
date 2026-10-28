@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_play_ground/Fruit.dart';
+import 'package:flutter_play_ground/fruit/Fruit.dart';
 
 /// One row in the fruits list.
 ///
