@@ -27,9 +27,7 @@ class _FruitsScreenState extends State<FruitsScreen> {
     "Blueberry",
     "Cherry",
     "Coconut",
-    "Fig",
     "Grapes",
-    "Kiwi",
   ];
 
   /// Creates a new [Fruit] with the next id.
