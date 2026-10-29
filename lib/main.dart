@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_play_ground/home/HomeScreen.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
+import 'package:flutter_play_ground/scaffoldMessenger/ScaffoldMessengerTestProvider.dart';
 import 'package:flutter_play_ground/signUp/SignUpProvider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => SignUpProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => SignUpProvider()),
+        ChangeNotifierProvider(create: (_) => ScaffoldMessengerTestProvider()),
+      ],
       child: const MyApp(),
     ),
   );
 }
+
+/// `GlobalKey<ScaffoldMessengerState>`
+/// Passed to `MaterialApp.scaffoldMessengerKey`, so it points to the app's root
+/// ScaffoldMessenger. With it we can show SnackBars from code that has no
+/// BuildContext, such as a provider.
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -21,6 +32,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      // Lets ScaffoldMessengerTestProvider show SnackBars without a context.
+      scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeData(
         // This is the theme of your application.
         //
