@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
+import 'package:flutter_play_ground/moveCounter/moveCounterScreen.dart';
 import 'package:flutter_play_ground/scaffoldMessenger/ScaffoldMessengerTestScreen.dart';
 import 'package:flutter_play_ground/signUp/SignUpScreen.dart';
 
@@ -39,6 +40,11 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () =>
                     _open(context, const ScaffoldMessengerTestScreen()),
                 child: const Text('ScaffoldMessanger Test'),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => _open(context, const MoveCounterScreen()),
+                child: const Text('Move Counter'),
               ),
             ],
           ),
