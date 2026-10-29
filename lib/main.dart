@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_play_ground/home/HomeScreen.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
 import 'package:flutter_play_ground/signUp/SignUpProvider.dart';
-import 'package:flutter_play_ground/signUp/SignUpScreen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      // Show the Sign Up screen when the app opens.
-      home: const SignUpScreen(),
+      // Show the Home screen when the app opens.
+      home: const HomeScreen(),
     );
   }
 }
