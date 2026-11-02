@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_play_ground/fruit/Fruit.dart';
 import 'package:flutter_play_ground/home/HomeScreen.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
 import 'package:flutter_play_ground/scaffoldMessenger/ScaffoldMessengerTestProvider.dart';
 import 'package:flutter_play_ground/signUp/SignUpProvider.dart';
+import 'package:flutter_play_ground/surveyBuilder/SurveyProvider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -11,6 +15,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => SignUpProvider()),
         ChangeNotifierProvider(create: (_) => ScaffoldMessengerTestProvider()),
+        ChangeNotifierProvider(create: (_) => SurveyProvider()),
       ],
       child: const MyApp(),
     ),
@@ -77,6 +82,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("---- MyHomePage: initState ------");
+
+    var fruit = Fruit(id: 1, name: "Blue");
+    var objectKey = ObjectKey(fruit);
+
+    var fruit1 = Fruit(id: 1, name: "Blue");
+    var objectKey1 = ObjectKey(fruit1);
+
+    debugPrint("MyHomePage: ${objectKey == objectKey1}");
+  }
+
   int _counter = 0;
 
   void _incrementCounter() {

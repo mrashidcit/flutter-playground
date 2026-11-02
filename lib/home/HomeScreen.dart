@@ -3,6 +3,7 @@ import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
 import 'package:flutter_play_ground/moveCounter/moveCounterScreen.dart';
 import 'package:flutter_play_ground/scaffoldMessenger/ScaffoldMessengerTestScreen.dart';
 import 'package:flutter_play_ground/signUp/SignUpScreen.dart';
+import 'package:flutter_play_ground/surveyBuilder/SurveyBuilderScreen.dart';
 
 /// First screen of the app. Lets the user pick which demo screen to open.
 class HomeScreen extends StatelessWidget {
@@ -45,6 +46,11 @@ class HomeScreen extends StatelessWidget {
               FilledButton(
                 onPressed: () => _open(context, const MoveCounterScreen()),
                 child: const Text('Move Counter'),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => _open(context, const SurveyBuilderScreen()),
+                child: const Text('Survey Builder'),
               ),
             ],
           ),
