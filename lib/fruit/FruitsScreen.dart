@@ -24,34 +24,10 @@ class _FruitsScreenState extends State<FruitsScreen> {
   static const List<String> _initialFruitNames = [
     "Apple",
     "Banana",
-    "Mango",
-    "Orange",
-    "Grapes",
-    "Pineapple",
-    "Watermelon",
-    "Papaya",
-    "Strawberry",
     "Blueberry",
-    "Raspberry",
-    "Blackberry",
-    "Peach",
-    "Pear",
-    "Plum",
     "Cherry",
-    "Guava",
-    "Pomegranate",
-    "Kiwi",
     "Coconut",
-    "Avocado",
-    "Apricot",
-    "Fig",
-    "Lychee",
-    "Dragon Fruit",
-    "Passion Fruit",
-    "Cantaloupe",
-    "Jackfruit",
-    "Tangerine",
-    "Grapefruit",
+    "Grapes",
   ];
 
   /// Creates a new [Fruit] with the next id.
@@ -63,7 +39,14 @@ class _FruitsScreenState extends State<FruitsScreen> {
 
   // Sorting state: null = original order (not sorted yet),
   // true = A→Z (ASC), false = Z→A (DESC).
-  bool? _isAscending;
+  // Starts as ASC so the list is A→Z when the screen first opens.
+  bool? _isAscending = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _applySort(); // initial A→Z order
+  }
 
   // ---------- Sorting ----------
 
@@ -206,6 +189,14 @@ class _FruitsScreenState extends State<FruitsScreen> {
             : ListView.separated(
                 itemCount: fruits.length,
                 separatorBuilder: (_, __) => const Divider(height: 1),
+                // Tells the list where a keyed item moved to after sorting,
+                // so its State (e.g. the Qty value) moves with it instead
+                // of being thrown away.
+                findItemIndexCallback: (key) {
+                  final id = (key as ValueKey<int>).value;
+                  final index = fruits.indexWhere((f) => f.id == id);
+                  return index == -1 ? null : index;
+                },
                 itemBuilder: (context, index) {
                   final fruit = fruits[index];
                   return FruitListItem(
