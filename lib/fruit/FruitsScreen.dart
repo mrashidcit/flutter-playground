@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_play_ground/Fruit.dart';
-import 'package:flutter_play_ground/FruitListItem.dart';
+import 'package:flutter_play_ground/fruit/Fruit.dart';
+import 'package:flutter_play_ground/fruit/FruitListItem.dart';
 
 class FruitsScreen extends StatefulWidget {
   const FruitsScreen({super.key, this.title = 'Fruits'});
