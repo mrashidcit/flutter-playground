@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_play_ground/fruit/Fruit.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
 import 'package:flutter_play_ground/moveCounter/moveCounterScreen.dart';
 import 'package:flutter_play_ground/scaffoldMessenger/ScaffoldMessengerTestScreen.dart';
@@ -7,7 +8,19 @@ import 'package:flutter_play_ground/surveyBuilder/SurveyBuilderScreen.dart';
 
 /// First screen of the app. Lets the user pick which demo screen to open.
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final tag = "HomeScreen";
+
+  HomeScreen({super.key}) {
+    debugPrint("---- $tag: constructor ------");
+
+    var fruit = Fruit(id: 1, name: "Apple");
+    var objectKey = ObjectKey(fruit);
+
+    var fruit1 = Fruit(id: 1, name: "Apple");
+    var objectKey1 = ObjectKey(fruit1);
+
+    print("$tag: ${objectKey == objectKey1}");
+  }
 
   void _open(BuildContext context, Widget screen) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));

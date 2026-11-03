@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
       // Show the Home screen when the app opens.
-      home: const HomeScreen(),
+      home: HomeScreen(),
     );
   }
 }
@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var fruit1 = Fruit(id: 1, name: "Blue");
     var objectKey1 = ObjectKey(fruit1);
 
-    debugPrint("MyHomePage: ${objectKey == objectKey1}");
+    print("MyHomePage: ${objectKey == objectKey1}");
   }
 
   int _counter = 0;
