@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_play_ground/colors/colorsScreen.dart';
 import 'package:flutter_play_ground/fruit/Fruit.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
 import 'package:flutter_play_ground/moveCounter/moveCounterScreen.dart';
@@ -64,6 +65,11 @@ class HomeScreen extends StatelessWidget {
               FilledButton(
                 onPressed: () => _open(context, const SurveyBuilderScreen()),
                 child: const Text('Survey Builder'),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => _open(context, const ColorsScreen()),
+                child: const Text('Colors'),
               ),
             ],
           ),
