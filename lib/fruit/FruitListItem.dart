@@ -11,12 +11,14 @@ class FruitListItem extends StatefulWidget {
   const FruitListItem({
     super.key,
     required this.fruit,
+    required this.onTap,
     required this.onSelectedChanged,
     required this.onEdit,
     required this.onDelete,
   });
 
   final Fruit fruit;
+  final VoidCallback onTap;
   final ValueChanged<bool?> onSelectedChanged;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -78,7 +80,7 @@ class _FruitListItemState extends State<FruitListItem>
           ],
         ),
       ),
-      onTap: widget.onEdit,
+      onTap: widget.onTap,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

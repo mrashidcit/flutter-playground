@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_play_ground/fruit/Fruit.dart';
+import 'package:flutter_play_ground/fruit/FruitDetailScreen.dart';
 import 'package:flutter_play_ground/fruit/FruitListItem.dart';
 
 class FruitsScreen extends StatefulWidget {
@@ -74,6 +75,14 @@ class _FruitsScreenState extends State<FruitsScreen> {
 
   void _toggleSelected(Fruit fruit, bool? checked) {
     setState(() => fruit.isSelected = checked ?? false);
+  }
+
+  // ---------- Navigation ----------
+
+  void _openDetails(Fruit fruit) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => FruitDetailScreen(fruit: fruit)),
+    );
   }
 
   // ---------- CRUD ----------
@@ -202,6 +211,7 @@ class _FruitsScreenState extends State<FruitsScreen> {
                   return FruitListItem(
                     key: ValueKey(fruit.id),
                     fruit: fruit,
+                    onTap: () => _openDetails(fruit),
                     onSelectedChanged: (checked) =>
                         _toggleSelected(fruit, checked),
                     onEdit: () => _editFruit(fruit),
