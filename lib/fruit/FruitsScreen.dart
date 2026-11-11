@@ -25,10 +25,17 @@ class _FruitsScreenState extends State<FruitsScreen> {
   static const List<String> _initialFruitNames = [
     "Apple",
     "Banana",
+    "Blackberry",
     "Blueberry",
     "Cherry",
     "Coconut",
     "Grapes",
+    "Guava",
+    "Peach",
+    "Pear",
+    "Plum",
+    "Pomegranate",
+    "Raspberry",
   ];
 
   /// Creates a new [Fruit] with the next id.
@@ -80,9 +87,9 @@ class _FruitsScreenState extends State<FruitsScreen> {
   // ---------- Navigation ----------
 
   void _openDetails(Fruit fruit) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => FruitDetailScreen(fruit: fruit)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => FruitDetailScreen(fruit: fruit)));
   }
 
   // ---------- CRUD ----------

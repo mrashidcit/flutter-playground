@@ -4,14 +4,15 @@ import 'package:flutter_play_ground/fruit/Fruit.dart';
 /// Static nutrition / benefit info for a fruit.
 class FruitInfo {
   const FruitInfo({
-    required this.emoji,
+    this.emoji,
     required this.color,
     required this.proteinPer100g,
     required this.benefits,
   });
 
   /// Used as the fruit's image (no asset files or network needed).
-  final String emoji;
+  /// Null for fruits that have no emoji; the first letter is shown instead.
+  final String? emoji;
 
   /// Background colour behind the image.
   final Color color;
@@ -101,6 +102,78 @@ class FruitInfo {
         'Antioxidants may support eye health',
       ],
     ),
+    'blackberry': FruitInfo(
+      color: Color(0xFF3B1F4A),
+      proteinPer100g: 1.4,
+      benefits: [
+        'Very high in fibre, supporting digestion',
+        'Rich in vitamin C and vitamin K',
+        'Good source of manganese for bone health',
+        'Packed with anthocyanin antioxidants',
+      ],
+    ),
+    'guava': FruitInfo(
+      color: Colors.lightGreen,
+      proteinPer100g: 2.6,
+      benefits: [
+        'Contains several times more vitamin C than an orange',
+        'High in fibre, which helps digestion',
+        'May help regulate blood sugar levels',
+        'Supports a healthy immune system',
+      ],
+    ),
+    'peach': FruitInfo(
+      emoji: '🍑',
+      color: Colors.orange,
+      proteinPer100g: 0.9,
+      benefits: [
+        'Source of vitamins A and C for skin health',
+        'Contains beta-carotene, good for eyes',
+        'Low in calories and high in water',
+        'Gentle fibre supports digestion',
+      ],
+    ),
+    'pear': FruitInfo(
+      emoji: '🍐',
+      color: Colors.lime,
+      proteinPer100g: 0.4,
+      benefits: [
+        'One of the highest-fibre fruits',
+        'Supports gut health and regularity',
+        'Contains copper and vitamin C',
+        'Helps keep you full for longer',
+      ],
+    ),
+    'plum': FruitInfo(
+      color: Colors.deepPurple,
+      proteinPer100g: 0.7,
+      benefits: [
+        'Rich in antioxidants (polyphenols)',
+        'Dried plums (prunes) help relieve constipation',
+        'May support bone health',
+        'Source of vitamin C and vitamin K',
+      ],
+    ),
+    'pomegranate': FruitInfo(
+      color: Color(0xFFC62828),
+      proteinPer100g: 1.7,
+      benefits: [
+        'Contains punicalagins, very powerful antioxidants',
+        'Anti-inflammatory properties',
+        'May help lower blood pressure',
+        'Good source of fibre, vitamin C and vitamin K',
+      ],
+    ),
+    'raspberry': FruitInfo(
+      color: Colors.pinkAccent,
+      proteinPer100g: 1.2,
+      benefits: [
+        'Among the highest-fibre berries',
+        'Rich in vitamin C and manganese',
+        'Low in sugar and calories',
+        'Antioxidants (ellagic acid) support overall health',
+      ],
+    ),
   };
 }
 
@@ -132,7 +205,23 @@ class FruitDetailScreen extends StatelessWidget {
               color: info.color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Text(info.emoji, style: const TextStyle(fontSize: 120)),
+            child: info.emoji != null
+                ? Text(info.emoji!, style: const TextStyle(fontSize: 120))
+                // No emoji for this fruit: show its first letter instead.
+                : CircleAvatar(
+                    radius: 70,
+                    backgroundColor: info.color,
+                    child: Text(
+                      fruit.name.trim().isEmpty
+                          ? '?'
+                          : fruit.name.trim()[0].toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 80,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
           ),
           const SizedBox(height: 16),
 
