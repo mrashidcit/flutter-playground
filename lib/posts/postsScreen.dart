@@ -11,7 +11,7 @@ class PostsScreen extends StatelessWidget {
     final posts = context.watch<PostsProvider>().posts;
 
     return ListView.separated(
-      // key: const PageStorageKey<String>('feed_tab'),
+      key: const PageStorageKey<String>('feed_tab'),
       itemCount: posts.length,
       separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) => PostListItem(post: posts[index]),
