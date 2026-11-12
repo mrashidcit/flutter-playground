@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_play_ground/fruit/Fruit.dart';
 import 'package:flutter_play_ground/home/HomeScreen.dart';
 import 'package:flutter_play_ground/fruit/FruitsScreen.dart';
+import 'package:flutter_play_ground/posts/postsProvider.dart';
 import 'package:flutter_play_ground/scaffoldMessenger/ScaffoldMessengerTestProvider.dart';
 import 'package:flutter_play_ground/signUp/SignUpProvider.dart';
 import 'package:flutter_play_ground/surveyBuilder/SurveyProvider.dart';
@@ -16,6 +17,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SignUpProvider()),
         ChangeNotifierProvider(create: (_) => ScaffoldMessengerTestProvider()),
         ChangeNotifierProvider(create: (_) => SurveyProvider()),
+        ChangeNotifierProvider(create: (_) => PostsProvider()),
       ],
       child: const MyApp(),
     ),
