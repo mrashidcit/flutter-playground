@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/**
 class User {
   final int id;
   final String name;
@@ -45,4 +46,5 @@ void main() {
 
   print(p1 == p2); // False (different instances in memory)
 }
+*/
 */
